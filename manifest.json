@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "URL Monitor",
-  "version": "1.0",
+  "name": "List of Trust",
+  "version": "1.1",
   "description": "Assign values to opened URLs",
   "permissions": ["webNavigation", "storage"],
   "background": {
