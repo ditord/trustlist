@@ -1,0 +1,56 @@
+{
+    "safe" : [
+        {
+           "url" :"google.com",
+           "raiting" : 4.9,
+           "description": "Some description for google.com",
+           "subdomains" :["www"]
+        
+        },
+        {
+            "url" :"facebook.com",
+            "raiting" : 4.6,
+            "description": "Some description for facebook.com",
+            "subdomains" : ["www"]
+         },
+         {
+            
+            "url" :"hetq.am",
+            "raiting" : 4.7,
+            "description": "Some description for hetq.am",
+            "subdomains" :["www"]
+         },
+         {
+            
+            "url" :"civilnet.am",
+            "raiting" : 4.6,
+            "description": "Some description for civilnet.am",
+            "subdomains" : ["www"]
+         }
+         ,
+         {
+            
+            "url" :"azatutyun.am",
+            "raiting" : 4.6,
+            "description": "Some description for azatutyun.am",
+            "subdomains" : ["www"]
+
+         },
+         {
+            "url" : "mediainitiatives.am",
+            "raiting": 4.2,
+            "description": "Some test description",
+            "subdomains" : ["tvapatum"]
+         }
+    ],
+
+    "unsafe" : [
+        {
+        "url" :"youtube.com",
+        "raiting" : 1.4,
+        "description": "Some bad description for youtube.com",
+        "subdomains" : ["www"]
+    }
+    ]
+
+}

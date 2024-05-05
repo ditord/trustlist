@@ -1,58 +1,67 @@
-chrome.runtime.onInstalled.addListener(function () {
-  // Fetch the list of safe domains from the text file
-  fetch(chrome.runtime.getURL('safe.txt'))
-    .then(response => response.text())
-    .then(data => {
-      // Extract safe domains from the text file
-      const safeDomains = data.split('\n').map(safedomain => safedomain.trim());
-
-      chrome.webNavigation.onCompleted.addListener(function (details) {
-        // Default value
-        let value = 0;
-
-       
-
-
-// Fetch the list of safe domains from the text file
-fetch(chrome.runtime.getURL('unsafe.txt'))
-.then(response => response.text())
-.then(data => {
-  // Extract safe domains from the text file
-  const unsafeDomains = data.split('\n').map(unsafedomain => unsafedomain.trim());
-
-  chrome.webNavigation.onCompleted.addListener(function (details) {
-    // Default value
-    let value = 0;
-
-
-        // Assign values based on conditions (you can add more conditions as needed)
-
- // Check if the current URL matches any safe domain
- for (const domain of safeDomains) {
-  if (details.url.includes(safedomain)) {
-    value = 1;
-    break;
-  }
-}
-
- // Check if the current URL matches any unsafe domain
- for (const domain of unsafeDomains) {
-  if (details.url.includes(unsafedomain)) {
-    value = 2;
-    break;
-  }
-}
-
-
-        } else if (details.url.includes("anotherexample.com")) {
-          value = 3;
-        }
-
-        // Save the assigned value in storage
-        chrome.storage.local.set({ [details.url]: value }, function () {
-          console.log("Value assigned for URL:", details.url);
-        });
-      });
+const tabsHistory = new Map();
+chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
+  
+    chrome.tabs.sendMessage(tabId,{
+        type:"UPDATE",
+        tabUrl : tab.url
+    },{},(response)=>{
+      
+       setIcon(response);
+       tabsHistory.set(tabId,response);
     })
-    .catch(error => console.error('Error fetching safe domains:', error));
-});
+
+})
+chrome.runtime.onMessage.addListener((obj,sender,sendResponse)=>{
+    if(obj.message == "POPUP_OPPENED"){
+      sendResponse(tabsHistory.get(obj.tabId))
+    }
+})
+chrome.tabs.onActivated.addListener((activeInfo)=>{
+            if(tabsHistory.get(activeInfo.tabId)){
+              setIcon(tabsHistory.get(activeInfo.tabId))
+              chrome.runtime.sendMessage(
+                {
+                  type:"UPDATE_POPUP_IMAGE",
+                  imgType : tabsHistory.get(activeInfo.tabId)
+              }
+              )
+            }else{
+              setIcon('UNKNOWN')
+              chrome.runtime.sendMessage(
+                {
+                  type:"UPDATE_POPUP_IMAGE",
+                  imgType : 'UNKNOWN'
+              }
+              )
+            }
+     
+        })
+
+function setIcon(response){
+  switch (response){
+    case "SAFE": {
+      chrome.action.setIcon({
+        path:{
+          "48" : "/img/Logo_Green_48.png"
+        }
+      })
+      break;
+    }
+    case "UNSAFE" :{
+      chrome.action.setIcon({
+        path:{
+          "48" : "/img/Logo_Red_48.png"
+        }
+      })
+      break;
+    }
+    case "UNKNOWN" :{
+      chrome.action.setIcon({
+        path:{
+          "48" : "/img/Logo_Yellow_48.png"
+        }
+      })
+      break;
+    }
+  }
+}
